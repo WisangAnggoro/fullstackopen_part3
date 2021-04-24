@@ -61,12 +61,19 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {  
   const body = request.body
-  console.log(body);
-  if (!body.name) {
+  if (!body.name || !body.number) {
     return response.status(400).json({ 
-      error: 'name missing' 
+      error: 'name or number missing' 
     })
   }
+
+  const existedPerson = persons.find(person => person.name === String(body.name))
+  if (existedPerson) {
+    return response.status(400).json({ 
+      error: 'name already exist' 
+    })
+  }
+
   const person = {
     name: body.name,
     number: body.number,
